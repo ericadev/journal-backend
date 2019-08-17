@@ -2,8 +2,15 @@ const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const entryController = require('./controllers/entryController');
+const userController = require('./controllers/userController');
+const authController = require('./controllers/authController');
+
 const app = express();
 app.use(express.json());
+
+app.use((req, res, next) => {
+  next();
+});
 
 dotenv.config({ path: './config.env' });
 
@@ -28,11 +35,20 @@ const {
   deleteEntry
 } = entryController;
 
-app.get('/api/v1/entries', getEntries);
-app.post('/api/v1/entries', addEntry);
-app.get('/api/v1/entries/:id', getEntry);
-app.put('/api/v1/entries/:id', updateEntry);
-app.delete('/api/v1/entries/:id', deleteEntry);
+const { getUsers } = userController;
+
+const { signup, login, protect } = authController;
+
+app.get('/api/v1/entries', [protect, getEntries]);
+app.post('/api/v1/entries', [protect, addEntry]);
+app.get('/api/v1/entries/:id', [protect, getEntry]);
+app.put('/api/v1/entries/:id', [protect, updateEntry]);
+app.delete('/api/v1/entries/:id', [protect, deleteEntry]);
+
+app.get('/api/v1/users', getUsers);
+
+app.post('/api/v1/users/signup', signup);
+app.post('/api/v1/users/login', login);
 
 const port = 3001;
 app.listen(port, () => console.log(`Server is listening on ${port}`));
