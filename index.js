@@ -1,14 +1,27 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
 const entryController = require('./controllers/entryController');
 const userController = require('./controllers/userController');
 const authController = require('./controllers/authController');
 
 const app = express();
 app.use(express.json());
+app.use(morgan('short'));
 
 app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, OPTIONS, PUT, DELETE'
+  );
+
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-Requested-With, content-type, authorization'
+  );
   next();
 });
 
