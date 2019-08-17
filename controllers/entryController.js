@@ -17,7 +17,7 @@ exports.getEntries = async (req, res) => {
 
 exports.getEntry = async (req, res) => {
   try {
-    const entry = await Entry.find({ _id: req.params.id });
+    const entry = await Entry.findById(req.params.id);
 
     res.status(200).json({
       status: 'success',
@@ -51,29 +51,37 @@ exports.addEntry = async (req, res) => {
   }
 };
 
-exports.updateEntry = (req, res) => {
-  const id = Number(req.params.id);
-  if (
-    !req.body ||
-    !req.body.title ||
-    !req.body.date ||
-    !req.body.content ||
-    id >= entries.length
-  ) {
-    return res.status(400).json({
-      status: 'failure',
-      message:
-        'Missing required field to make journal entry, or invalid entry chosen'
+exports.updateEntry = async (req, res) => {
+  try {
+    const entry = await Entry.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+    res.status(200).json({
+      status: 'success',
+      data: {
+        entry
+      }
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message
     });
   }
+};
 
-  const entry = entries.find(ent => ent.id === id);
-  entries.splice(id, 1);
-  const newEntry = Object.assign({ id }, req.body);
-  entries.push(newEntry);
-
-  res.status(202).json({
-    status: 'success',
-    data: newEntry
-  });
+exports.deleteEntry = async (req, res) => {
+  try {
+    await Entry.findByIdAndDelete(req.params.id);
+    res.status(204).json({
+      status: 'success',
+      data: null
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message
+    });
+  }
 };

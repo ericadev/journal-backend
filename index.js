@@ -24,14 +24,15 @@ const {
   getEntries,
   getEntry,
   addEntry,
-  updateEntry
-  //deleteEntry
+  updateEntry,
+  deleteEntry
 } = entryController;
 
 app.get('/api/v1/entries', getEntries);
 app.post('/api/v1/entries', addEntry);
 app.get('/api/v1/entries/:id', getEntry);
 app.put('/api/v1/entries/:id', updateEntry);
+app.delete('/api/v1/entries/:id', deleteEntry);
 
 const port = 3001;
 app.listen(port, () => console.log(`Server is listening on ${port}`));
