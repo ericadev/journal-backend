@@ -65,5 +65,5 @@ app.get('/api/v1/users', getUsers);
 app.post('/api/v1/users/signup', signup);
 app.post('/api/v1/users/login', login);
 
-const port = 3001;
+const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server is listening on ${port}`));
