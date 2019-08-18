@@ -61,13 +61,13 @@ const {
 
 const { getUsers } = userController;
 
-const { signup, login, protect } = authController;
+const { signup, login, protect, restrict } = authController;
 
 app.get('/api/v1/entries', [protect, getEntries]);
-app.post('/api/v1/entries', [protect, addEntry]);
+app.post('/api/v1/entries', [protect, restrictTo('admin'), addEntry]);
 app.get('/api/v1/entries/:id', [protect, getEntry]);
-app.put('/api/v1/entries/:id', [protect, updateEntry]);
-app.delete('/api/v1/entries/:id', [protect, deleteEntry]);
+app.put('/api/v1/entries/:id', [protect, restrictTo('admin'), updateEntry]);
+app.delete('/api/v1/entries/:id', [protect, restrictTo('admin'), deleteEntry]);
 
 app.get('/api/v1/users', getUsers);
 
