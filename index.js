@@ -1,12 +1,14 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const morgan = require('morgan');
 const entryController = require('./controllers/entryController');
 const userController = require('./controllers/userController');
 const authController = require('./controllers/authController');
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(morgan('short'));
 
