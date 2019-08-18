@@ -13,10 +13,16 @@ app.use(express.json());
 app.use(morgan('short'));
 
 app.use((req, res, next) => {
-  res.setHeader(
-    'Access-Control-Allow-Origin',
-    'https://intense-journey-75173.herokuapp.com'
-  );
+  var allowedOrigins = [
+    'https://intense-journey-75173.herokuapp.com',
+    'http://localhost:3000'
+  ];
+  var origin = req.headers.origin;
+
+  if (allowedOrigins.indexOf(origin) > -1) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
   res.header('Access-Control-Allow-Credentials', true);
   res.setHeader(
     'Access-Control-Allow-Methods',
