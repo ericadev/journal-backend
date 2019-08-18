@@ -97,6 +97,23 @@ exports.protect = async (req, res, next) => {
     });
   }
 
+  freshUser = await User.findById(decoded.id);
+
+  if (!freshUser) {
+    return res.status(401).json({
+      status: 'fail',
+      message: 'User invalid. Please log in again.'
+    });
+  }
+
+  if (freshUser.changedPasswordAfter(decoded.iat)) {
+    return res.status(401).json({
+      status: 'fail',
+      message: 'User invalid. Please log in again.'
+    });
+  }
+
+  req.user = freshUser;
   next();
 };
 
