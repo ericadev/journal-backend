@@ -1,8 +1,9 @@
 const Entry = require('../models/entryModel');
 
 exports.getEntries = async (req, res) => {
+  const user_id = req.params.id;
   try {
-    const entries = await Entry.find();
+    const entries = await Entry.find({ user_id });
     res.status(200).json({
       status: 'success',
       data: entries
@@ -34,8 +35,9 @@ exports.getEntry = async (req, res) => {
 };
 
 exports.addEntry = async (req, res) => {
+  const user_id = req.params.id;
   try {
-    const newEntry = await Entry.create(req.body);
+    const newEntry = await Entry.create({ ...req.body, user_id });
 
     res.status(201).json({
       status: 'success',

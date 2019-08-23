@@ -56,10 +56,13 @@ exports.login = async (req, res, next) => {
     }
 
     const token = signToken(user._id);
+    const user_id = user._id;
+    console.log(user_id);
 
     res.status(200).json({
       status: 'success',
-      token
+      token,
+      user_id
     });
   } catch (err) {
     res.status(400).json({

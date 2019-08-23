@@ -13,6 +13,10 @@ const entrySchema = new mongoose.Schema({
   date: {
     type: String,
     required: [true, 'An entry must have a date']
+  },
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   }
 });
 

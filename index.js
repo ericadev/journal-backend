@@ -63,9 +63,9 @@ const { getUsers } = userController;
 
 const { signup, login, protect, restrictTo } = authController;
 
-app.get('/api/v1/entries', [protect, getEntries]);
-app.post('/api/v1/entries', [protect, restrictTo('admin'), addEntry]);
-app.get('/api/v1/entries/:id', [protect, getEntry]);
+app.get('/api/v1/entries/:id', [protect, getEntries]);
+app.post('/api/v1/entries/:id', [protect, restrictTo('admin'), addEntry]);
+app.get('/api/v1/entries/:userid/:id', [protect, getEntry]);
 app.put('/api/v1/entries/:id', [protect, restrictTo('admin'), updateEntry]);
 app.delete('/api/v1/entries/:id', [protect, restrictTo('admin'), deleteEntry]);
 
