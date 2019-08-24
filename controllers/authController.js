@@ -19,15 +19,16 @@ exports.signup = async (req, res, next) => {
 
     const token = signToken(newUser._id);
 
-    res.status(201).json({
+    res.status(201).send({
       status: 'success',
       token,
+      user_id: newUser._id,
       data: {
         user: newUser
       }
     });
   } catch (err) {
-    res.status(400).json({
+    res.status(400).send({
       status: 'fail',
       message: err.message
     });
@@ -39,7 +40,7 @@ exports.login = async (req, res, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      res.status(401).json({
+      res.status(200).send({
         status: 'fail',
         message: 'Please provide valid email and password'
       });
@@ -49,7 +50,7 @@ exports.login = async (req, res, next) => {
     const user = await User.findOne({ email }).select('+password');
 
     if (!user || !(await user.correctPassword(password, user.password))) {
-      return res.status(401).json({
+      return res.status(200).send({
         status: 'fail',
         message: 'Incorrect email or password'
       });
@@ -59,13 +60,13 @@ exports.login = async (req, res, next) => {
     const user_id = user._id;
     console.log(user_id);
 
-    res.status(200).json({
+    res.status(200).send({
       status: 'success',
       token,
       user_id
     });
   } catch (err) {
-    res.status(400).json({
+    res.status(200).send({
       status: 'fail',
       message: err.message
     });
@@ -85,7 +86,7 @@ exports.protect = async (req, res, next) => {
   }
 
   if (!token) {
-    return res.status(401).json({
+    return res.status(401).send({
       status: 'fail',
       message: 'User is not logged in. Please log in again.'
     });
@@ -94,7 +95,7 @@ exports.protect = async (req, res, next) => {
   try {
     decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   } catch (err) {
-    return res.status(401).json({
+    return res.status(401).send({
       status: 'fail',
       message: 'User invalid. Please log in again.'
     });
@@ -103,14 +104,14 @@ exports.protect = async (req, res, next) => {
   freshUser = await User.findById(decoded.id);
 
   if (!freshUser) {
-    return res.status(401).json({
+    return res.status(401).send({
       status: 'fail',
       message: 'User invalid. Please log in again.'
     });
   }
 
   if (freshUser.changedPasswordAfter(decoded.iat)) {
-    return res.status(401).json({
+    return res.status(401).send({
       status: 'fail',
       message: 'User invalid. Please log in again.'
     });
@@ -123,7 +124,7 @@ exports.protect = async (req, res, next) => {
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({
+      return res.status(403).send({
         status: 'fail',
         message: 'You do not have permission to perform this action.'
       });
